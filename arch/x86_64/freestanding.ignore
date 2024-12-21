@@ -1,0 +1,4 @@
+main.o
+dummy_abort.o
+SYS_EXIT.o
+plt.o
