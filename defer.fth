@@ -1,0 +1,35 @@
+: DEFER-ABORT ABORT" CALLED EMPTY DEFER" ;
+: DEFER CREATE ['] DEFER-ABORT , DOES> EXECUTE@ ;
+: DEFER! >BODY ! ;
+: DEFER@ >BODY @ ;
+: IS
+    STATE @ IF
+        POSTPONE ['] POSTPONE DEFER!
+    ELSE
+        ' DEFER!
+    THEN
+; IMMEDIATE
+: ACTION-OF
+    STATE @ IF
+        POSTPONE ['] POSTPONE DEFER@
+    ELSE
+        ' DEFER@
+    THEN
+; IMMEDIATE
+: DEFER??
+    DUP >BODY @ ['] DEFER-ABORT = INVERT IF
+        EXECUTE
+    ELSE
+        DROP
+    THEN
+;
+: DEFER?
+    STATE @ IF
+        POSTPONE ['] POSTPONE DEFER??
+    ELSE
+        ' DEFER??
+    THEN
+; IMMEDIATE
+: DEFERS
+    ' DEFER@ COMPILE,
+; IMMEDIATE

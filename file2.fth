@@ -1,0 +1,44 @@
+CREATE FINCN 0 , 0 , 0 ,
+
+: NAME-PRESENT?
+    >R >R
+    C" FINCN" FIND 0= ABORT" FINCN CHAIN BROKEN"
+    >BODY
+    BEGIN
+        DUP
+        CELL+ DUP @ SWAP CELL+ SWAP R> R> 2DUP >R >R COMPARE 0= IF
+            DROP R> R> 2DROP -1 EXIT
+        THEN
+        @ DUP 0=
+    UNTIL
+    DROP
+    R> R> 2DROP
+    0
+;
+
+: INCLUDED
+    C" FINCN" FIND 0= ABORT" FINCN CHAIN BROKEN"
+    S" CREATE FINCN" EVALUATE
+    ,
+    DUP ,
+    2DUP HERE SWAP CMOVE
+    DUP HERE + ORG
+
+    \ ." INCLUDED " 2DUP TYPE CR
+
+    INCLUDED0
+;
+
+: INCLUDE PARSE-NAME INCLUDED ;
+
+: REQUIRED
+    \ ." REQUIRED " 2DUP TYPE CR
+    2DUP NAME-PRESENT? 0= IF
+        INCLUDED
+    ELSE
+        \ ." SKIP " 2DUP TYPE CR
+        2DROP
+    THEN
+;
+
+: REQUIRE PARSE-NAME REQUIRED ;

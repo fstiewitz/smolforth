@@ -1,0 +1,3 @@
+define_word({D+}, {D_plus}, {0})
+define_word({D-}, {D_minus}, {0})
+define_word({M*/}, {M_star_slash}, {0})

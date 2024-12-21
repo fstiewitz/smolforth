@@ -1,0 +1,739 @@
+
+Running ANS Forth and Forth 2012 test programs, version 0.13.4
+
+
+CR CR SOURCE TYPE ( Preliminary test ) CR
+SOURCE ( These lines test SOURCE, TYPE, CR and parenthetic comments ) TYPE CR
+( The next line of output should be blank to test CR ) SOURCE TYPE CR CR
+
+( Pass #1: testing 0 >IN +! ) 0 >IN +! SOURCE TYPE CR
+( Pass #2: testing 1 >IN +! ) 1 >IN +! xSOURCE TYPE CR
+( Pass #3: testing 1+ ) 1 1+ >IN +! xxSOURCE TYPE CR
+( Pass #4: testing @ ! BASE ) 0 1+ 1+ BASE ! BASE @ >IN +! xxSOURCE TYPE CR
+( Pass #5: testing decimal BASE ) BASE @ >IN +! xxxxxxxxxxSOURCE TYPE CR
+( Pass #6: testing : ; ) : .SRC SOURCE TYPE CR ; 6 >IN +! xxxxxx.SRC
+( Pass #7: testing number input ) 19 >IN +! xxxxxxxxxxxxxxxxxxx.SRC
+( Pass #8: testing VARIABLE ) VARIABLE Y 2 Y ! Y @ >IN +! xx.SRC
+( Pass #9: testing WORD COUNT ) 5 MSG abcdef) Y ! Y ! >IN +! xxxxx.SRC
+( Pass #10: testing WORD COUNT ) MSG ab) >IN +! xxY ! .SRC
+Pass #11: testing WORD COUNT .MSG
+Pass #12: testing = returns all 1's for true
+Pass #13: testing = returns 0 for false
+Pass #14: testing -1 interpreted correctly
+Pass #15: testing 2*
+Pass #16: testing 2*
+Pass #17: testing AND
+Pass #18: testing AND
+Pass #19: testing AND
+Pass #20: testing ?F~ ?~~ Pass Error
+Pass #21: testing ?~
+Pass#22: testing EMIT
+Pass #23: testing S"
+
+Results: 
+
+Pass messages #1 to #23 should be displayed above
+and no error messages
+
+0testsfailed out of 57 additional tests
+
+
+--- End of Preliminary Tests --- 
+
+TESTING CORE WORDS
+TESTING BASIC ASSUMPTIONS
+TESTING BOOLEANS: INVERT AND OR XOR
+TESTING 2* 2/ LSHIFT RSHIFT
+TESTING COMPARISONS: 0= = 0< < > U< MIN MAX
+TESTING STACK OPS: 2DROP 2DUP 2OVER 2SWAP ?DUP DEPTH DROP DUP OVER ROT SWAP
+TESTING >R R> R@
+TESTING ADD/SUBTRACT: + - 1+ 1- ABS NEGATE
+TESTING MULTIPLY: S>D * M* UM*
+TESTING DIVIDE: FM/MOD SM/REM UM/MOD */ */MOD / /MOD MOD
+TESTING HERE , @ ! CELL+ CELLS C, C@ C! CHARS 2@ 2! ALIGN ALIGNED +! ALLOT
+TESTING CHAR [CHAR] [ ] BL S"
+TESTING ' ['] FIND EXECUTE IMMEDIATE COUNT LITERAL POSTPONE STATE
+TESTING IF ELSE THEN BEGIN WHILE REPEAT UNTIL RECURSE
+TESTING DO LOOP +LOOP I J UNLOOP LEAVE EXIT
+TESTING DEFINING WORDS: : ; CONSTANT VARIABLE CREATE DOES> >BODY
+TESTING EVALUATE
+TESTING SOURCE >IN WORD
+TESTING <# # #S #> HOLD SIGN BASE >NUMBER HEX DECIMAL
+TESTING FILL MOVE
+TESTING OUTPUT: . ." CR EMIT SPACE SPACES TYPE U.
+YOU SHOULD SEE THE STANDARD GRAPHIC CHARACTERS:
+ !"#$%&'()*+,-./0123456789:;<=>?@
+ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`
+abcdefghijklmnopqrstuvwxyz{|}~
+YOU SHOULD SEE 0-9 SEPARATED BY A SPACE:
+0 1 2 3 4 5 6 7 8 9 
+YOU SHOULD SEE 0-9 (WITH NO SPACES):
+0123456789
+YOU SHOULD SEE A-G SEPARATED BY A SPACE:
+A B C D E F G 
+YOU SHOULD SEE 0-5 SEPARATED BY TWO SPACES:
+0  1  2  3  4  5  
+YOU SHOULD SEE TWO SEPARATE LINES:
+LINE 1
+LINE 2
+YOU SHOULD SEE THE NUMBER RANGES OF SIGNED AND UNSIGNED NUMBERS:
+  SIGNED: -8000000000000000 7FFFFFFFFFFFFFFF 
+UNSIGNED: 0 FFFFFFFFFFFFFFFF 
+TESTING INPUT: ACCEPT
+
+PLEASE TYPE UP TO 80 CHARACTERS:
+hello
+
+RECEIVED: "hello"
+TESTING DICTIONARY SEARCH RULES
+
+End of Core word set tests
+TESTING DO +LOOP with run-time increment, negative increment, infinite loop
+TESTING DO +LOOP with large and small increments
+TESTING DO +LOOP with maximum and minimum increments
+TESTING multiple RECURSEs in one colon definition
+TESTING multiple ELSE's in an IF statement
+TESTING manipulation of >IN in interpreter mode
+TESTING IMMEDIATE with CONSTANT  VARIABLE and CREATE [ ... DOES> ]
+TESTING that IMMEDIATE doesn't toggle a flag
+TESTING parsing behaviour of S" ." and (
+
+You should see 2345: 2345
+TESTING definition names
+TESTING FIND with a zero length string and a non-existent word
+TESTING IF ... BEGIN ... REPEAT (unstructured)
+TESTING DOES> doesn't cause a problem with a CREATEd address
+TESTING ALLOT ( n -- ) where n <= 0
+
+End of additional Core tests
+
+Test utilities loaded
+TESTING Core Extension words
+TESTING TRUE FALSE
+TESTING <> U>   (contributed by James Bowman)
+TESTING 0<> 0>   (contributed by James Bowman)
+TESTING NIP TUCK ROLL PICK   (contributed by James Bowman)
+TESTING 2>R 2R@ 2R>   (contributed by James Bowman)
+TESTING HEX   (contributed by James Bowman)
+TESTING WITHIN   (contributed by James Bowman)
+TESTING UNUSED  (contributed by James Bowman & Peter Knaggs)
+TESTING AGAIN   (contributed by James Bowman)
+TESTING MARKER   (contributed by James Bowman)
+TESTING ?DO
+TESTING BUFFER:
+TESTING VALUE TO
+TESTING CASE OF ENDOF ENDCASE
+TESTING :NONAME RECURSE
+TESTING C"
+TESTING COMPILE,
+TESTING SAVE-INPUT and RESTORE-INPUT with a string source
+TESTING .(
+
+
+Output from .(
+You should see -9876: -9876 
+and again: -9876
+
+
+On the next 2 lines you should see First then Second messages:
+First message via .( 
+Second message via ."
+
+TESTING .R and U.R - has to handle different cell sizes
+
+
+Output from .R and U.R
+You should see lines duplicated:
+indented by 0 spaces
+8522862768232894100 
+8522862768232894100 
+-8970676912557384689 
+-8970676912557384689 
+8522862768232894100 
+8522862768232894100 
+9476067161152166927 
+9476067161152166927 
+
+indented by 0 spaces
+8522862768232894100 
+8522862768232894100 
+-8970676912557384689 
+-8970676912557384689 
+8522862768232894100 
+8522862768232894100 
+9476067161152166927 
+9476067161152166927 
+
+indented by 5 spaces
+     8522862768232894100 
+     8522862768232894100 
+     -8970676912557384689 
+     -8970676912557384689 
+     8522862768232894100 
+     8522862768232894100 
+     9476067161152166927 
+     9476067161152166927 
+
+TESTING PAD ERASE
+TESTING PARSE
+TESTING PARSE-NAME  (Forth 2012)
+TESTING DEFER DEFER@ DEFER! IS ACTION-OF (Forth 2012)
+TESTING HOLDS  (Forth 2012)
+TESTING REFILL SOURCE-ID
+TESTING S\"  (Forth 2012 compilation mode)
+
+The next test should display:
+One line...
+another line
+One line...
+anotherLine
+
+End of Core Extension word tests
+TESTING Block word set
+TESTING Random Number Utilities
+TESTING BLOCK ( read-only mode )
+TESTING BUFFER ( read-only mode )
+TESTING Read and Write access with UPDATE and FLUSH
+TESTING SAVE-BUFFERS
+TESTING BLK
+TESTING LOAD and EVALUATE
+TESTING LIST and SCR
+[2J[0;0HR                                    EDITOR                        20241113T1750
+       [BLOCK 27                                                     0,0]
+       |Should show a (mostly) blank screen                             |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+[2J[0;0HR                                    EDITOR                        20241113T1750
+       [BLOCK 20                                                     0,0]
+       |List of the First test block                                    |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+[2J[0;0HR                                    EDITOR                        20241113T1750
+       [BLOCK 29                                                     0,0]
+       |List of the Last test block                                     |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+[2J[0;0HR                                    EDITOR                        20241113T1750
+       [BLOCK 28                                                     0,0]
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                   End of Screen|
+[2J[0;0HR                                    EDITOR                        20241113T1750
+       [BLOCK 25                                                     0,0]
+       |Should show another (mostly) blank screen                       |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+       |                                                                |
+TESTING EMPTY-BUFFERS
+TESTING >IN manipulation from a block source
+TESTING \, SAVE-INPUT, RESTORE-INPUT and REFILL from a block source
+Calculated Characters per Line: 64 
+TESTING THRU
+
+End of Block word tests
+TESTING interpreter and compiler reading double numbers, without prefixes
+TESTING 2CONSTANT
+TESTING DNEGATE
+TESTING D+ with small integers
+TESTING D+ with mid range integers
+TESTING D+ with large double integers
+TESTING D- with small integers
+TESTING D- with mid-range integers
+TESTING D- with large integers
+TESTING D0< D0=
+TESTING D2* D2/
+TESTING D< D=
+TESTING 2LITERAL 2VARIABLE
+TESTING DMAX DMIN
+TESTING D>S DABS
+TESTING M+ M*/
+TESTING D. D.R
+
+You should see lines duplicated:
+     165479781173881033602052035120928376802
+     165479781173881033602052035120928376802 
+        165479781173881033602052035120928376802
+        165479781173881033602052035120928376802 
+     -157219068260939922992571812294424553394
+     -157219068260939922992571812294424553394 
+          -157219068260939922992571812294424553394
+          -157219068260939922992571812294424553394 
+TESTING 2ROT DU< (Double Number extension words)
+TESTING 2VALUE
+
+End of Double-Number word tests
+TESTING CATCH THROW
+TESTING ABORT ABORT"
+TESTING a system generated exception
+
+End of Exception word tests
+TESTING Facility words
+TESTING BEGIN-STRUCTURE END-STRUCTURE +FIELD
+TESTING FIELD: CFIELD:
+TESTING Nested structures
+
+End of Facility word tests
+TESTING File Access word set
+TESTING CREATE-FILE CLOSE-FILE
+TESTING OPEN-FILE W/O WRITE-LINE
+TESTING R/O FILE-POSITION (simple)  READ-LINE 
+TESTING S" in interpretation mode (compile mode tested in Core tests)
+TESTING R/W WRITE-FILE REPOSITION-FILE READ-FILE FILE-POSITION S"
+TESTING BIN READ-FILE FILE-SIZE
+TESTING RESIZE-FILE
+TESTING DELETE-FILE
+TESTING multi-line ( comments
+TESTING SOURCE-ID (can only test it does not return 0 or -1)
+TESTING RENAME-FILE FILE-STATUS FLUSH-FILE
+TESTING REQUIRED REQUIRE INCLUDED
+TESTING S\" (Forth 2012 interpretation mode)
+TESTING two buffers available for S" and/or S\" (Forth 2012)
+TESTING SAVE-INPUT and RESTORE-INPUT with a file source
+\? TESTING the -[ELSE]- part is executed
+TESTING nested SAVE-INPUT, RESTORE-INPUT and REFILL from a file
+TESTING the nested results
+
+End of File-Access word set tests
+TESTING Memory-Allocation word set
+TESTING ALLOCATE FREE RESIZE
+TESTING failure of RESIZE and ALLOCATE (unlikely to be enough memory)
+TESTING @  and ! work in ALLOCATEd memory (provided by Peter Knaggs)
+
+End of Memory-Allocation word tests
+TESTING AHEAD
+TESTING [IF] [ELSE] [THEN]
+TESTING immediacy of [IF] [ELSE] [THEN]
+TESTING [IF] and [ELSE] carry out a text scan by parsing and discarding words
+TESTING [ELSE] and [THEN] without a preceding [IF]
+TESTING CS-PICK and CS-ROLL
+TESTING [DEFINED] [UNDEFINED]
+TESTING N>R NR>
+TESTING SYNONYM
+\? TESTING TRAVERSE-WORDLIST NAME>COMPILE NAME>INTERPRET NAME>STRING
+
+NAME>INTERPRET returns an execution token for all
+core words with undefined interpretation semantics.
+So NAME>INTERPRET returning 0 is untested.
+
+End of Programming Tools word tests
+TESTING Search-order word set
+TESTING FORTH-WORDLIST GET-ORDER SET-ORDER
+TESTING ALSO ONLY FORTH
+TESTING GET-CURRENT SET-CURRENT WORDLIST (simple)
+TESTING minimum search order list contains FORTH-WORDLIST and SET-ORDER
+TESTING GET-ORDER SET-ORDER with 0 and -1 number of wids argument
+TESTING DEFINITIONS PREVIOUS
+TESTING SEARCH-WORDLIST WORDLIST FIND
+TESTING new definitions are put into the correct wordlist
+TESTING ORDER  \ Should display search order and compilation wordlist
+
+ONLY FORTH DEFINITIONS search order and compilation wordlist
+FORTH
+CURRENT FORTH
+
+Plus another unnamed wordlist at the head of the search order
+UNNAMED
+FORTH
+CURRENT UNNAMED
+
+End of Search Order word tests
+TESTING String word set
+TESTING -TRAILING
+TESTING /STRING
+TESTING SEARCH
+TESTING COMPARE
+TESTING CMOVE and CMOVE>
+TESTING BLANK
+TESTING SLITERAL
+TESTING UNESCAPE
+TESTING SUBSTITUTE REPLACES
+
+End of String word tests
+
+---------------------------
+        Error Report
+Word Set             Errors
+---------------------------
+Core                    0 
+Core extension          0 
+Block                   0 
+Double number           0 
+Exception               0 
+Facility                0 
+File-access             0 
+Locals                  -
+Memory-allocation       0 
+Programming-tools       0 
+Search-order            0 
+String                  0 
+---------------------------
+Total                   0 
+---------------------------
+
+
+Forth tests completed 
+
+
+Running FP Tests
+
+RUNNING FATAN2-TEST.FS
+----------------------
+
+FLOATING-POINT AND DATA STACKS *SEPARATE*
+TESTING NORMAL VALUES
+TESTING SINGLE UNIX 3 SPECIAL VALUES SPEC
+TESTING SINGLE UNIX 3 SPECIAL VALUES OPTIONAL SPEC
+
+#ERRORS: 0 
+
+
+END OF FATAN2-TEST.FS
+
+RUNNING IEEE-ARITH-TEST.FS
+--------------------------
+
+TESTING F+
+TESTING F-
+TESTING F*
+TESTING F/
+TESTING FSQRT
+#ERRORS: 0 
+
+
+END OF IEEE-ARITH-TEST.FS
+
+RUNNING IEEE-FPROX-TEST.FS
+--------------------------
+
+TESTING EQUALITY OF FLOATING-POINT ENCODING
+TESTING ABSOLUTE TOLERANCE
+TESTING RELATIVE TOLERANCE
+#ERRORS: 0 
+
+END OF IEEE-FPROX-TEST.FS
+
+RUNNING FPZERO-TEST.4TH
+-----------------------
+
+
+SYSTEM SUPPORTS FP SIGNED ZERO. 
+#ERRORS: 0 
+
+END OF FPZERO-TEST.4TH
+
+RUNNING FPIO-TEST.4TH
+---------------------
+FPIO-TEST         V1.1      01 DEC     2010 
+TESTING CONVERSION OF EXACTLY REPRESENTABLE NUMBERS
+
+TESTING ROUNDING OF NUMBERS
+
+END OF FPIO-TEST.4TH
+
+RUNNING TO-FLOAT-TEST.4TH
+-------------------------
+TESTING >FLOAT
+
+#ERRORS: 0 
+
+END OF TO-FLOAT-TEST.4TH
+
+RUNNING PARANOIA.4TH
+--------------------
+
+LEST THIS PROGRAM STOP PREMATURELY, I.E. BEFORE DISPLAYING
+
+   `END OF TEST',
+
+TRY TO PERSUADE THE COMPUTER NOT TO TERMINATE EXECUTION WHEN AN
+ERROR LIKE OVER/UNDERFLOW OR DIVISION BY ZERO OCCURS, BUT RATHER
+TO PERSEVERE WITH A SURROGATE VALUE AFTER, PERHAPS, DISPLAYING SOME
+WARNING.  IF PERSUASION AVAILS NAUGHT, DON'T DESPAIR BUT RUN THIS
+PROGRAM ANYWAY TO SEE HOW MANY MILESTONES IT PASSES, AND THEN
+AMEND IT TO MAKE FURTHER PROGRESS.
+
+ANSWER QUESTIONS WITH Y, Y, N OR N (UNLESS OTHERWISE INDICATED).
+DIAGNOSIS RESUMES AFTER MILESTONE NUMBER 0 
+         PAGE: 1 
+
+USERS ARE INVITED TO HELP DEBUG AND AUGMENT THIS PROGRAM SO IT WILL
+COPE WITH UNANTICIPATED AND NEWLY UNCOVERED ARITHMETIC PATHOLOGIES.
+PLEASE SEND SUGGESTIONS AND INTERESTING RESULTS TO
+
+RICHARD KARPINSKI
+COMPUTER CENTER U-76
+UNIVERSITY OF CALIFORNIA
+SAN FRANCISCO, CA 94143-0704, USA
+
+IN DOING SO, PLEASE INCLUDE THE FOLLOWING INFORMATION:
+
+PRECISION: DOUBLE
+VERSION: 10 FEBRUARY 1989; FORTH
+COMPUTER:
+COMPILER:
+OPTIMIZATION LEVEL:
+OTHER RELEVANT COMPILER OPTIONS:
+DIAGNOSIS RESUMES AFTER MILESTONE NUMBER 1 
+         PAGE: 2 
+
+RUNNING THIS PROGRAM SHOULD REVEAL THESE CHARACTERISTICS:
+
+    RADIX = 1, 2, 4, 8, 10, 16, 100, 256 ...
+    PRECISION = NUMBER OF SIGNIFICANT DIGITS CARRIED.
+    U2 = RADIX/RADIX^PRECISION = ONE ULP
+(ONEULPNIT IN THE LAST PLACE) OF 1.000XXX .
+    U1 = 1/RADIX^PRECISION = ONE ULP OF NUMBERS A LITTLE LESS THAN 1.0 .
+    ADEQUACY OF GUARD DIGITS FOR MULT., DIV. AND SUBT.
+    WHETHER ARITHMETIC IS CHOPPED, CORRECTLY ROUNDED, OR SOMETHING ELSE
+FOR MULT., DIV., ADD/SUBT. AND SQRT.
+    WHETHER A STICKY BIT USED CORRECTLY FOR ROUNDING.
+    UNDERFLOWTHRESHOLD = AN UNDERFLOW THRESHOLD.
+    E0 AND PSEUDOZERO TELL WHETHER UNDERFLOW IS ABRUPT, GRADUAL, OR FUZZY.
+    V = AN OVERFLOW THRESHOLD, ROUGHLY.
+    V0  TELLS, ROUGHLY, WHETHER  INFINITY  IS REPRESENTED.
+    COMPARISIONS ARE CHECKED FOR CONSISTENCY WITH SUBTRACTION
+AND FOR CONTAMINATION WITH PSEUDO-ZEROS.
+    SQRT IS TESTED.  Y^X IS NOT TESTED.
+    EXTRA-PRECISE SUBEXPRESSIONS ARE REVEALED BUT NOT YET TESTED.
+    DECIMAL-BINARY CONVERSION IS NOT YET TESTED FOR ACCURACY.
+DIAGNOSIS RESUMES AFTER MILESTONE NUMBER 2 
+         PAGE: 3 
+
+THE PROGRAM ATTEMPTS TO DISCRIMINATE AMONG
+
+  FLAWS, LIKE LACK OF A STICKY BIT,
+  SERIOUS DEFECTS, LIKE LACK OF A GUARD DIGIT, AND
+  FAILURES, LIKE 2+2 == 5 .
+
+FAILURES MAY CONFOUND SUBSEQUENT DIAGNOSES.
+
+THE DIAGNOSTIC CAPABILITIES OF THIS PROGRAM GO BEYOND AN EARLIER
+PROGRAM CALLED `MACHAR', WHICH CAN BE FOUND AT THE END OF THE
+BOOK  `SOFTWARE MANUAL FOR THE ELEMENTARY FUNCTIONS' (1980) BY
+W. J. CODY AND W. WAITE. ALTHOUGH BOTH PROGRAMS TRY TO DISCOVER
+THE RADIX, PRECISION AND RANGE (OVER/UNDERFLOW THRESHOLDS)
+OF THE ARITHMETIC, THIS PROGRAM TRIES TO COPE WITH A WIDER VARIETY
+OF PATHOLOGIES, AND TO SAY HOW WELL THE ARITHMETIC IS IMPLEMENTED.
+THE PROGRAM IS BASED UPON A CONVENTIONAL RADIX REPRESENTATION FOR
+FLOATING-POINT NUMBERS, BUT ALSO ALLOWS LOGARITHMIC ENCODING
+AS USED BY CERTAIN EARLY WANG MACHINES.
+
+BASIC VERSION OF THIS PROGRAM (C) 1983 BY PROF. W. M. KAHAN;
+SEE SOURCE COMMENTS FOR MORE HISTORY.
+DIAGNOSIS RESUMES AFTER MILESTONE NUMBER 3 
+         PAGE: 4 
+
+PROGRAM IS NOW RUNNING TESTS ON SMALL INTEGERS:
+-1, 0, 1/2, 1, 2, 3, 4, 5, 9, 27, 32 & 240 ARE O.K.
+
+SEARCHING FOR RADIX AND PRECISION.
+RADIX = 2.000000 .
+CLOSEST RELATIVE SEPARATION FOUND IS U1 = 1.110223E-16  
+
+RECALCULATING RADIX AND PRECISION 
+CONFIRMS CLOSEST RELATIVE SEPARATION U1 .
+RADIX CONFIRMED.
+THE NUMBER OF SIGNIFICANT DIGITS OF THE RADIX IS 53.00000 
+DIAGNOSIS RESUMES AFTER MILESTONE NUMBER 30 
+         PAGE: 5 
+
+SUBTRACTION APPEARS TO BE NORMALIZED, AS IT SHOULD BE.
+CHECKING FOR GUARD DIGIT IN F*, F/, AND F-.
+    F*, F/, AND F- APPEAR TO HAVE GUARD DIGITS, AS THEY SHOULD.
+DIAGNOSIS RESUMES AFTER MILESTONE NUMBER 40 
+         PAGE: 6 
+
+CHECKING ROUNDING ON MULTIPLY, DIVIDE AND ADD/SUBTRACT.
+MULTIPLICATION APPEARS TO ROUND CORRECTLY.
+DIVISION APPEARS TO ROUND CORRECTLY.
+ADDITION/SUBTRACTION APPEARS TO ROUND CORRECTLY.
+CHECKING FOR STICKY BIT.
+STICKY BIT APPARENTLY USED CORRECTLY.
+
+DOES MULTIPLICATION COMMUTE?  TESTING ON 20 RANDOM PAIRS.
+    NO FAILURES FOUND IN 20 INTEGER PAIRS.
+
+RUNNING TEST OF SQUARE ROOT(X).
+TESTING IF SQRT(X * X) == X FOR 20 INTEGERS X.
+TEST FOR SQRT MONOTONICITY.
+SQRT HAS PASSED A TEST FOR MONOTONICITY.
+TESTING WHETHER SQRT IS ROUNDED OR CHOPPED.
+SQUARE ROOT APPEARS TO BE CORRECTLY ROUNDED.
+DIAGNOSIS RESUMES AFTER MILESTONE NUMBER 90 
+         PAGE: 7 
+
+TESTING POWERS Z^I FOR SMALL INTEGERS Z AND I.
+... NO DISCREPANCIES FOUND.
+
+SEEKING UNDERFLOW THRESHOLDS UFTHOLD AND E0.
+SMALLEST STRICTLY POSITIVE NUMBER FOUND IS E0 = 4.940656E-324  
+SINCE COMPARISON DENIES Z = 0, EVALUATING (Z + Z) / Z SHOULD BE SAFE.
+WHAT THE MACHINE GETS FOR (Z + Z) / Z IS  2.000000 
+THIS IS O.K., PROVIDED OVER/UNDERFLOW HAS NOT JUST BEEN SIGNALED.
+UNDERFLOW IS GRADUAL; IT INCURS ABSOLUTE ERROR =
+(ROUNDOFF IN UFTHOLD) < E0.
+THE UNDERFLOW THRESHOLD IS 2.225074E-308  BELOW WHICH
+CALCULATION MAY SUFFER LARGER RELATIVE ERROR THAN MERELY ROUNDOFF.
+SINCE UNDERFLOW OCCURS BELOW THE THRESHOLD
+UFTHOLD = 2.000000E0  ^-1.022000E3  
+ONLY UNDERFLOW SHOULD AFFLICT THE EXPRESSION
+     2.000000E0  ^-2.044000E3  
+ACTUALLY CALCULATING YIELDS: 0.000000E-1  
+THIS COMPUTED VALUE IS O.K.
+
+TESTING X^((X + 1) / (X - 1)) VS. EXP(2) = 7.389056E0  AS X -> 1.
+ACCURACY SEEMS ADEQUATE.
+TESTING POWERS Z^Q AT FOUR NEARLY EXTREME VALUES.
+... NO DISCREPANCIES FOUND.
+
+DIAGNOSIS RESUMES AFTER MILESTONE NUMBER 160 
+         PAGE: 8 
+
+SEARCHING FOR OVERFLOW THRESHOLD:
+THIS MAY GENERATE AN ERROR.
+CAN `Z = -Y' OVERFLOW?
+TRYING IT ON Y = -INF 
+SEEMS O.K.
+OVERFLOW THRESHOLD IS V  = 1.797693E308  
+OVERFLOW SATURATES AT V0 = INF 
+NO OVERFLOW SHOULD BE SIGNALED FOR V * 1 = 1.797693E308  
+                          NOR FOR V / 1 = 1.797693E308  
+ANY OVERFLOW SIGNAL SEPARATING THIS * FROM THE ONE
+ABOVE IS A DEFECT.
+
+DIAGNOSIS RESUMES AFTER MILESTONE NUMBER 190 
+         PAGE: 9 
+
+
+WHAT MESSAGE AND/OR VALUES DOES DIVISION BY ZERO PRODUCE?
+
+   TRYING TO COMPUTE 1 / 0 PRODUCES ...INF 
+
+   TRYING TO COMPUTE 0 / 0 PRODUCES ...-NAN 
+DIAGNOSIS RESUMES AFTER MILESTONE NUMBER 220 
+         PAGE: 10 
+
+
+FAILURES  ENCOUNTERED = 0 
+SERIOUS DEFECTS  DISCOVERED = 0 
+DEFECTS  DISCOVERED = 0 
+FLAWS  DISCOVERED = 0 
+
+NO FAILURES, DEFECTS NOR FLAWS HAVE BEEN DISCOVERED.
+ROUNDING APPEARS TO CONFORM TO THE PROPOSED IEEE STANDARD P754
+THE ARITHMETIC DIAGNOSED APPEARS TO BE EXCELLENT!
+END OF TEST.
+
+END OF PARANOIA.FTH
+
+RUNNING AK-FP-TEST.FTH
+----------------------
+
+TESTING --- MINFORTH FLOATING-POINT WORDS ---
+TESTING BASIC FUNCTIONS
+TESTING STACK OPERATIONS
+TESTING BASIC ARITHMETICS
+TESTING COMPARISONS
+TESTING MEMORY ACCESS, FLITERAL, FCONSTANT, FVARIABLE
+TESTING NUMBER INPUT
+TESTING FRACTIONAL ARITHMETICS
+TESTING TRIGONOMETRIC FUNCTIONS
+TESTING EXPONENTIAL AND LOGARITHMIC FUNCTIONS
+TESTING HYPERBOLIC FUNCTIONS
+TESTING NUMBER OUTPUT
+
+CHECKING FS. 
+YOU MIGHT SEE 1.0000E0  : 1.0000E0  
+YOU MIGHT SEE 2.0000E1  : 2.0000E1  
+YOU MIGHT SEE 2.0000E-2 : 2.0000E-2  
+YOU MIGHT SEE -3.3300E4 : -3.3300E4  
+YOU MIGHT SEE 3.3333E0  : 3.3333E0  
+YOU MIGHT SEE 6.6667E-2 : 6.6667E-2  
+CHECKING FE. 
+YOU MIGHT SEE 1.0000E0  : 1.0000E0  
+YOU MIGHT SEE 20.000E0  : 20.000E0  
+YOU MIGHT SEE 300.00E0  : 300.00E0  
+YOU MIGHT SEE 4.0000E3  : 4.0000E3  
+YOU MIGHT SEE 333.33E-3 : 333.33E-3  
+YOU MIGHT SEE 6.6667E3  : 6.6667E3  
+CHECKING F. 
+YOU MIGHT SEE 1000.   : 1000.0 
+YOU MIGHT SEE 1100.   : 1100.0 
+YOU MIGHT SEE 0.33333 : .33333 
+YOU MIGHT SEE 66.667  : 66.667 
+YOU MIGHT SEE 0.00023 : 2.3400E-4  
+YOU MIGHT SEE 0.00024 : 2.3600E-4  
+
+END OF AK-FP-TEST.FTH
+
+
+FP tests finished
+
+Hello, World!
+from multiple :FORTH_MAIN:s
+How exciting!
+TESTVAR: 99 

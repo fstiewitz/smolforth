@@ -1,0 +1,3 @@
+ifdef({SF_HAS_FREESTANDING}, {}, {define_word({ALLOCATE}, {}, {0})})
+ifdef({SF_HAS_FREESTANDING}, {}, {define_word({FREE}, {}, {0})})
+ifdef({SF_HAS_FREESTANDING}, {}, {define_word({RESIZE}, {}, {0})})

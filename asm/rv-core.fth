@@ -1,0 +1,380 @@
+S" OPTIMIZATION-LEVEL" ENVIRONMENT? DROP 2 <> [IF] : CAN-OPTIMIZE ; [THEN]
+
+CODE OVER
+    *ENTER ]
+    A0 2 *FETCH
+    1 *GROW
+    A0 1 *STORE
+    [ *LEAVE \ TODO optimize
+;END-CODE
+
+CODE DROP
+    *ENTER ]
+    -1 *GROW
+    [ CAN-OPTIMIZE *LEAVE
+;END-CODE
+
+CODE SWAP
+    *ENTER ]
+    A0 1 *FETCH
+    A1 2 *FETCH
+    A0 2 *STORE
+    A1 1 *STORE
+    [ CAN-OPTIMIZE *LEAVE
+;END-CODE
+
+CODE DUP
+    *ENTER ]
+    A0 1 *FETCH
+    A0 *PUSH
+    [ CAN-OPTIMIZE *LEAVE
+;END-CODE
+
+CODE ROT
+    *ENTER ]
+    A2 1 *FETCH
+    A1 2 *FETCH
+    A0 3 *FETCH
+    A0 1 *STORE
+    A2 2 *STORE
+    A1 3 *STORE
+    [ CAN-OPTIMIZE *LEAVE
+;END-CODE
+
+CODE 2DROP
+    *ENTER ]
+    -2 *GROW
+    [ *LEAVE
+*END-CODE
+
+CODE 2SWAP
+    *ENTER ]
+    A3 1 *FETCH
+    A2 2 *FETCH
+    A1 3 *FETCH
+    A0 4 *FETCH
+    A1 1 *STORE
+    A0 2 *STORE
+    A3 3 *STORE
+    A2 4 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE 2DUP
+    *ENTER ]
+    A1 1 *FETCH
+    A0 2 *FETCH
+    A1 -1 *STORE
+    A0 0 *STORE
+    2 *GROW
+    [ *LEAVE
+*END-CODE
+
+CODE >R
+    *ENTER ]
+    A0 *POP
+    A0 S1 0 *SX
+    S1 S1 1 CELLS *ADDI
+    [ *LEAVE
+*END-CODE
+
+CODE R>
+    *ENTER ]
+    A0 S1 1 CELLS NEGATE *LX
+    S1 S1 1 CELLS NEGATE *ADDI
+    A0 *PUSH
+    [ *LEAVE
+*END-CODE
+
+CODE R@
+    *ENTER ]
+    A0 S1 1 CELLS NEGATE *LX
+    A0 *PUSH
+    [ *LEAVE
+*END-CODE
+
+CODE *
+    *ENTER ]
+    *OP2>1
+    A0 A0 A1 *MUL
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE /
+    *ENTER ]
+    *OP2>1
+    A0 A1 A0 *DIV
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE MOD
+    *ENTER ]
+    *OP2>1
+    A0 A1 A0 *REM
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE /MOD
+    *ENTER ]
+    A1 A0 2 *FETCH+
+    A2 A1 A0 *DIV
+    A3 A1 A0 *REM
+    A3 2 *STORE
+    A2 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE +
+    *ENTER ]
+    *OP2>1
+    A0 A0 A1 *ADD
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE -
+    *ENTER ]
+    *OP2>1
+    A0 A1 A0 *SUB
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE 1+
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 1 *ADDI
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE 1-
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 -1 *ADDI
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE 2+
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 2 *ADDI
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE 2-
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 -2 *ADDI
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE 2*
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 1 *SLLI
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE 2/
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 1 *SRAI
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE LSHIFT
+    *ENTER ]
+    *OP2>1
+    A0 A1 A0 *SLL
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE RSHIFT
+    *ENTER ]
+    *OP2>1
+    A0 A1 A0 *SRL
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE AND
+    *ENTER ]
+    *OP2>1
+    A0 A1 A0 *AND
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE OR
+    *ENTER ]
+    *OP2>1
+    A0 A1 A0 *OR
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE XOR
+    *ENTER ]
+    *OP2>1
+    A0 A1 A0 *XOR
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE INVERT
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 -1 *XORI
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE NEGATE
+    *ENTER ]
+    A0 1 *FETCH
+    A0 X0 A0 *SUB
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE M*
+    *ENTER ]
+    A1 A0 2 *FETCH+
+    A2 A1 A0 *MULH
+    A3 A1 A0 *MUL
+    A3 2 *STORE
+    A2 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE UM*
+    *ENTER ]
+    A1 A0 2 *FETCH+
+    A2 A1 A0 *MULHU
+    A3 A1 A0 *MUL
+    A3 2 *STORE
+    A2 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE CELL+
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 WORDSIZE *ADDI
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE CHAR+
+    *ENTER ]
+    POSTPONE 1+
+    [ *LEAVE
+*END-CODE
+
+0 S" RV64" ENVIRONMENT? AND [IF] DROP
+CODE CELLS
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 3 *SLLI
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+[THEN]
+
+0 S" RV32" ENVIRONMENT? AND [IF] DROP
+CODE CELLS
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 2 *SLLI
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+[THEN]
+
+CODE CHARS
+    *ENTER ]
+    [ *LEAVE
+*END-CODE
+
+CODE !
+    *ENTER ]
+    A1 A0 2 *FETCH+
+    -2 *GROW
+    A1 A0 0 *SX
+    [ *LEAVE
+*END-CODE
+
+CODE C!
+    *ENTER ]
+    A1 A0 2 *FETCH+
+    -2 *GROW
+    A1 A0 0 *SB
+    [ *LEAVE
+*END-CODE
+
+CODE +!
+    *ENTER ]
+    A1 A0 2 *FETCH+
+    -2 *GROW
+    A2 A0 0 *LX
+    A1 A1 A2 *ADD
+    A1 A0 0 *SX
+    [ *LEAVE
+*END-CODE
+
+
+CODE C+!
+    *ENTER ]
+    A1 A0 2 *FETCH+
+    -2 *GROW
+    A2 A0 0 *LB
+    A1 A1 A2 *ADD
+    A1 A0 0 *SB
+    [ *LEAVE
+*END-CODE
+
+CODE @
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 0 *LX
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE C@
+    *ENTER ]
+    A0 1 *FETCH
+    A0 A0 0 *LBU
+    A0 1 *STORE
+    [ *LEAVE
+*END-CODE
+
+CODE 2!
+    *ENTER ]
+    A2 A1 A0 3 *FETCH+
+    -3 *GROW
+    A2 A0 WORDSIZE *SX
+    A1 A0 0 *SX
+    [ *LEAVE
+*END-CODE
+
+CODE 2@
+    *ENTER ]
+    A0 1 *FETCH
+    1 *GROW
+    A2 A0 WORDSIZE *LX
+    A1 A0 0 *LX
+    A2 2 *STORE
+    A1 1 *STORE
+    [ *LEAVE
+*END-CODE

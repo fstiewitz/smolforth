@@ -1,0 +1,60 @@
+ONLY FORTH DEFINITIONS
+VOCABULARY TARDISK
+ALSO TARDISK DEFINITIONS
+
+S" test-cat.tar" RAMDISK: TEST-FILE
+
+BEGIN-STRUCTURE TAR
+    100 +FIELD TAR:NAME
+    8 +FIELD TAR:MODE
+    8 +FIELD TAR:UID
+    8 +FIELD TAR:GID
+    12 +FIELD TAR:SIZE
+    12 +FIELD TAR:MTIME
+    8 +FIELD TAR:CHKSUM
+    CFIELD: TAR:TYPEFLAG
+    100 +FIELD TAR:LINKNAME
+    6 +FIELD TAR:MAGIC
+    2 +FIELD TAR:VERSION
+    32 +FIELD TAR:UNAME
+    32 +FIELD TAR:GNAME
+    8 +FIELD TAR:DEVMAJOR
+    8 +FIELD TAR:DEVMINOR
+    155 +FIELD TAR:PREFIX
+END-STRUCTURE
+
+ALSO FORTH DEFINITIONS
+
+: OPEN-FILE
+    >R
+    TEST-FILE CELL+ TEST-FILE @ + >R
+    TEST-FILE CELL+
+    BEGIN \ c-addr u header R: mode end
+        DUP R@ <
+    WHILE
+        >R 2DUP R@ TAR:NAME 100 CCOUNT-MAX COMPARE 0= IF
+            R>
+            8 BASE !
+            DUP 0 0 ROT TAR:SIZE 12 >NUMBER 2DROP D>S
+            DECIMAL
+            SWAP 512 + SWAP
+            2>R
+            2DROP
+            2R>
+            2R> 2DROP
+            MEMFILE:NEW 0
+            EXIT
+        THEN
+        R>
+        8 BASE !
+        DUP 0 0 ROT TAR:SIZE 12 >NUMBER 2DROP D>S
+        DECIMAL
+        HEX
+        511 + -512 AND
+        512 + +
+        DECIMAL
+    REPEAT
+    R> DROP
+    DROP
+    R> OPEN-FILE
+;

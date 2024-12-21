@@ -1,0 +1,1 @@
+define_word({BLOCK-OP}, {BLOCK_OP}, {0})

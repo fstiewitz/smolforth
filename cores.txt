@@ -1,0 +1,2 @@
+core string
+core string search double tools memory O2

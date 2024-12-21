@@ -1,0 +1,396 @@
+: DSR
+    CSI
+    0 <# #S #> TYPE
+    [CHAR] n EMIT
+;
+
+
+: READ-NUMBER ( -- n c )
+    0
+    BEGIN
+        EKEY EKEY>CHAR INVERT IF EXIT THEN
+        DUP [CHAR] 0 [CHAR] 9 1+ WITHIN INVERT IF EXIT THEN
+        [CHAR] 0 - SWAP 10 * +
+    AGAIN
+;
+
+: GET-XY
+    0
+    6 DSR
+    BEGIN
+        EKEY 27 =
+    UNTIL
+    EKEY EKEY>CHAR INVERT IF DROP EXIT THEN
+    [CHAR] [ = INVERT IF EXIT THEN
+    READ-NUMBER [CHAR] ; = INVERT IF DROP EXIT THEN
+    READ-NUMBER [CHAR] R = INVERT IF 2DROP EXIT THEN
+    ROT DROP
+;
+
+: ESC-TYPE
+    0 DO
+        DUP I + C@
+        DUP 32 127 WITHIN IF
+            EMIT
+        ELSE
+            DROP SPACE
+        THEN
+    LOOP
+    DROP
+;
+
+VARIABLE WIDTH 80 WIDTH !
+
+: PRINT-MIDDLE ( c-addr len )
+    DUP 2/ WIDTH @ 2/ SWAP - SPACES TYPE
+    CR
+;
+
+: PRINT2 ( c-addr len c-addr len )
+    2OVER 2DUP TYPE
+    NIP OVER + WIDTH @ SWAP - SPACES
+    TYPE
+    2DROP
+    CR
+;
+
+: PRINT3 ( c-addr len c-addr len c-addr len )
+    2>R 2>R ( c-addr len )
+    2DUP TYPE ( c-addr len )
+    2R@ ( c-addr len c-addr len )
+    2OVER NIP SWAP 2/ + WIDTH @ 2/ SWAP - SPACES ( c-addr len c-addr )
+    DROP 2R@ TYPE ( c-addr len )
+    2DROP
+    2R> 2R@ ( c-addr len c-addr len )
+    2OVER NIP 2/ + WIDTH @ 2/ SWAP - SPACES ( c-addr len c-addr )
+    DROP 2R> TYPE
+    2DROP
+    CR
+;
+
+DEFER TERM-READER
+DEFER TERM-READER-RESET
+
+DEFER KEY-ENTER
+DEFER KEY-ESC-B
+DEFER KEY-ESC-S
+DEFER KEY-NORMAL
+DEFER KEY-DELETE
+DEFER KEY-BACKSPACE
+DEFER CSI-CUD
+DEFER CSI-CUU
+DEFER CSI-CUF
+DEFER CSI-CUB
+
+CREATE CSI-VALUES 10 CELLS ALLOT
+VARIABLE CSI-I
+
+: CSI-RESET
+    0 CSI-I !
+    10 0 DO
+        0 CSI-VALUES I CELLS + !
+    LOOP
+;
+
+: CSI-DIGIT
+    CSI-VALUES CSI-I @ CELLS + DUP @ 10 * ROT [CHAR] 0 - + SWAP !
+;
+
+: CSI-SEP
+    1 CSI-I +!
+;
+
+: CSI-FINISH
+    CASE
+        [CHAR] A OF CSI-CUU ENDOF
+        [CHAR] B OF CSI-CUD ENDOF
+        [CHAR] C OF CSI-CUF ENDOF
+        [CHAR] D OF CSI-CUB ENDOF
+        PAGE
+        ." ESC [ "
+        CSI-I @ 1+ 0 DO
+            CSI-VALUES I CELLS + @ .
+        LOOP
+        DUP EMIT
+        ABORT
+    ENDCASE
+;
+
+: TERM-READER-CSI
+    EKEY EKEY>CHAR IF
+        DUP [CHAR] 0 [CHAR] 9 1+ WITHIN IF
+            CSI-DIGIT
+        ELSE
+            DUP [CHAR] ; = IF
+                DROP CSI-SEP
+                CSI-I @ 10 = IF
+                    TERM-READER-RESET
+                THEN
+            ELSE
+                CSI-FINISH
+                TERM-READER-RESET
+            THEN
+        THEN
+    ELSE
+        TERM-READER-RESET
+    THEN
+    0
+;
+
+: TERM-READER-ESC
+    EKEY EKEY>CHAR IF
+        CASE
+            [CHAR] [ OF CSI-RESET ['] TERM-READER-CSI IS TERM-READER ENDOF
+            DROP
+        ENDCASE
+    ELSE
+        TERM-READER-RESET
+    THEN
+    0
+;
+
+: TERM-READER-NORMAL
+    EKEY EKEY>CHAR IF \ is normal
+        KEY-NORMAL
+    ELSE \ is special
+        CASE
+            2 OF DEFER? KEY-ESC-B ENDOF
+            3 OF ABORT ENDOF
+            8 OF KEY-BACKSPACE ENDOF
+            13 OF KEY-ENTER ENDOF
+            19 OF DEFER? KEY-ESC-S ENDOF
+            27 OF ['] TERM-READER-ESC IS TERM-READER ENDOF
+            127 OF KEY-DELETE ENDOF
+        ENDCASE
+    THEN
+    0
+;
+
+' TERM-READER-NORMAL IS TERM-READER
+: TRM
+    ['] TERM-READER-NORMAL IS TERM-READER
+; ' TRM IS TERM-READER-RESET
+
+9 CONSTANT EZ-LEFT
+72 CONSTANT EZ-RIGHT
+3 CONSTANT EZ-TOP
+18 CONSTANT EZ-BOTTOM
+9 3 2CONSTANT EZ-TL
+9 18 2CONSTANT EZ-BL
+72 3 2CONSTANT EZ-TR
+72 18 2CONSTANT EZ-BR
+
+2VARIABLE CO
+CREATE TERM-BUFFER 1024 ALLOT
+VARIABLE SCR
+VARIABLE LAST-CURSOR-POS-LEN 0 LAST-CURSOR-POS-LEN !
+
+: X CO CELL+ @ EZ-LEFT - ;
+: Y CO @ EZ-TOP - ;
+
+: PRINT-CURSOR-POS
+    Y 0 <# #S #> TYPE
+    [CHAR] , EMIT
+    X 0 <# #S #> TYPE
+;
+
+: UPDATE-CURSOR-POS ( -- )
+    LAST-CURSOR-POS-LEN @ >R
+    Y 0 <# #S #> NIP
+    X 0 <# #S #> NIP
+    + 1+ DUP DUP LAST-CURSOR-POS-LEN ! R@ < IF
+        EZ-RIGHT 1+ R@ -
+        2 AT-XY
+        R> SWAP - SPACES
+    ELSE
+        R> DROP
+        EZ-RIGHT 1+ SWAP -
+        2 AT-XY
+    THEN
+    PRINT-CURSOR-POS
+;
+
+: PRINT-BLOCK-LINE
+    7 SPACES
+    [CHAR] [ EMIT
+    ." BLOCK "
+    SCR @ 0 <# #S #> DUP 6 + >R TYPE
+    R> 64 SWAP -
+    Y 0 <# #S #> NIP
+    X 0 <# #S #> NIP
+    + 1+ DUP LAST-CURSOR-POS-LEN ! -
+    SPACES
+    PRINT-CURSOR-POS
+    [CHAR] ] EMIT
+    CR
+;
+
+: DRAW-LINE
+    CSI ." 2K"
+    0 CO @ AT-XY
+    7 SPACES [CHAR] | EMIT
+    64 * TERM-BUFFER + 64 ESC-TYPE
+    [CHAR] | EMIT
+    CR
+;
+
+: FIX-BOUNDS
+    CO @ 3 < IF 3 CO ! THEN
+    CO @ 19 < INVERT IF 18 CO ! THEN
+    CO CELL+ @ 9 < IF 9 CO CELL+ ! THEN
+    CO CELL+ @ 73 < INVERT IF 72 CO CELL+ ! THEN
+    CO 2@ AT-XY
+;
+
+: TERM-CUD
+    CSI-I @ 0 = IF
+        1
+        CSI-VALUES @ ?DUP IF NIP THEN
+        CO +!
+        FIX-BOUNDS
+    THEN
+; ' TERM-CUD IS CSI-CUD
+
+: TERM-CUU
+    CSI-I @ 0 = IF
+        1
+        CSI-VALUES @ ?DUP IF NIP THEN
+        NEGATE CO +!
+        FIX-BOUNDS
+    THEN
+; ' TERM-CUU IS CSI-CUU
+
+: TERM-CUF
+    CSI-I @ 0 = IF
+        1
+        CSI-VALUES @ ?DUP IF NIP THEN
+        CO CELL+ +!
+        FIX-BOUNDS
+    THEN
+; ' TERM-CUF IS CSI-CUF
+
+: TERM-CUB
+    CSI-I @ 0 = IF
+        1
+        CSI-VALUES @ ?DUP IF NIP THEN
+        NEGATE CO CELL+ +!
+        FIX-BOUNDS
+    THEN
+; ' TERM-CUB IS CSI-CUB
+
+: TERM-DELETE
+    CO CELL+ @ EZ-LEFT > INVERT IF EXIT THEN
+    TERM-BUFFER Y 64 * +
+    DUP >R X + >R
+    R@ R> 1- OVER R@ 64 + SWAP - MOVE
+    R> 64 + 1- 32 SWAP C!
+    Y DRAW-LINE
+    -1 CO CELL+ +!
+    FIX-BOUNDS
+; ' TERM-DELETE IS KEY-DELETE
+
+: TERM-BACKSPACE
+    CO CELL+ @ EZ-RIGHT > IF EXIT THEN
+    TERM-BUFFER Y 64 * +
+    DUP >R X + >R
+    R@ R@ R> 1+ OVER R@ 64 + SWAP - >R SWAP R> MOVE
+    R> 64 + 1- 32 SWAP C!
+    Y DRAW-LINE
+    FIX-BOUNDS
+; ' TERM-BACKSPACE IS KEY-BACKSPACE
+
+: TERM-CHAR-INSERT
+    CO CELL+ @ EZ-RIGHT > IF EXIT THEN
+    TERM-BUFFER Y 64 * + \ line start
+    DUP >R X + >R \ cursor
+    R@ R@ R> 1+ OVER R> 64 + SWAP - MOVE
+    2DUP C!
+    DROP
+    EMIT
+    Y DRAW-LINE
+    1 CO CELL+ +!
+    FIX-BOUNDS
+; ' TERM-CHAR-INSERT IS KEY-NORMAL
+
+: TERM-CHAR-REPLACE
+    DUP TERM-BUFFER Y 64 * + X + C!
+    EMIT
+    1 CO CELL+ +!
+    FIX-BOUNDS
+; ' TERM-CHAR-REPLACE IS KEY-NORMAL
+
+: TERM-ENTER
+    1 CO +!
+    FIX-BOUNDS
+; ' TERM-ENTER IS KEY-ENTER
+
+: UPDATE-FLAGS
+    1 1 AT-XY
+    ['] KEY-NORMAL >BODY @ ['] TERM-CHAR-INSERT = IF
+        [CHAR] I EMIT
+    ELSE
+        [CHAR] R EMIT
+    THEN
+;
+
+: TERM-TOGGLE-INSERT
+    ['] KEY-NORMAL >BODY @ ['] TERM-CHAR-INSERT = IF
+        ['] TERM-CHAR-REPLACE IS KEY-NORMAL
+    ELSE
+        ['] TERM-CHAR-INSERT IS KEY-NORMAL
+    THEN
+    UPDATE-FLAGS
+; ' TERM-TOGGLE-INSERT IS KEY-ESC-B
+
+: TERM-SAVE
+    SCR @ BLOCK TERM-BUFFER SWAP 1024 MOVE
+    UPDATE
+    FLUSH
+; ' TERM-SAVE IS KEY-ESC-S
+
+: LIST
+    PAGE
+    \ S" EDITOR" PRINT-MIDDLE
+    \ S" EDITOR" S" 20241113T1750" PRINT2
+    S" R" S" EDITOR" S" 20241113T1750" PRINT3
+    SCR !
+    EZ-TL CO 2!
+    PRINT-BLOCK-LINE
+    SCR @ BLOCK DUP TERM-BUFFER 1024 MOVE
+    16 0 DO
+        7 SPACES [CHAR] | EMIT
+        DUP I 64 * + 64 ESC-TYPE
+        [CHAR] | EMIT
+        CR
+    LOOP
+    DROP
+;
+
+: EDITOR-PAGE
+    PAGE
+    \ S" EDITOR" PRINT-MIDDLE
+    \ S" EDITOR" S" 20241113T1750" PRINT2
+    S" R" S" EDITOR" S" 20241113T1750" PRINT3
+    SCR !
+    EZ-TL CO 2!
+    PRINT-BLOCK-LINE
+    SCR @ BLOCK DUP TERM-BUFFER 1024 MOVE
+    16 0 DO
+        7 SPACES [CHAR] | EMIT
+        DUP I 64 * + 64 ESC-TYPE
+        [CHAR] | EMIT
+        CR
+    LOOP
+    EZ-TL AT-XY
+    BEGIN
+        TERM-READER
+        UPDATE-CURSOR-POS
+        CO 2@ AT-XY
+    UNTIL
+    DROP
+;
+
+: EDITOR-PAGE-NOTHROW
+    ['] EDITOR-PAGE CATCH DROP
+    PAGE
+;

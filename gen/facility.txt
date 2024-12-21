@@ -1,0 +1,2 @@
+define_word({MS}, {}, {0})
+define_word({TIME&DATE}, {TIME_and_DATE}, {0})

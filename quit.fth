@@ -1,0 +1,25 @@
+: QUIT
+    0 SOURCE-ID!
+    0 BLK !
+    QUIT
+;
+
+: QUIT-CAUGHT-HANDLER ( n -- )
+    CASE
+        0 OF EXIT ENDOF
+        -1 OF ." UNCAUGHT ABORT" CR ENDOF
+        -2 OF
+            ." UNCAUGHT ABORT" [CHAR] " EMIT SPACE
+            ERR-STRING @ ERR-SIZE @ TYPE CR
+        ENDOF
+        -13 OF
+            ." UNCAUGHT UNDEFINED WORD "
+            ERR-STRING @ ERR-SIZE @ TYPE CR
+        ENDOF
+        -38 OF ." UNCAUGHT NON-EXISTENT FILE" CR ENDOF
+        ." UNCAUGHT ERROR " DUP . CR
+    ENDCASE
+    1
+;
+' QUIT-CAUGHT-HANDLER IS QUIT-CAUGHT
+

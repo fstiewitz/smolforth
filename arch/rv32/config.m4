@@ -1,0 +1,6 @@
+define(M4WORDSIZE, 4)
+define(M4WL_SO_MAX, 16)
+define(DIR_CELL, .word)
+define(simple_tail, `tail $1')
+define(simple_jmp_reg, `jalr x0, $1')
+define(LINEBUFSIZE, 256)

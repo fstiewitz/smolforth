@@ -1,0 +1,22 @@
+: [DEFINED] BL WORD FIND NIP 0<> ; IMMEDIATE
+: [UNDEFINED] BL WORD FIND NIP 0= ; IMMEDIATE
+
+: SYNONYM
+    CREATE IMMEDIATE
+    HIDE ' , REVEAL
+    DOES>
+        @ STATE @ 0= OVER IMMEDIATE? OR IF
+            EXECUTE
+        ELSE
+            COMPILE,
+        THEN
+;
+
+: NAME>INTERPRET ;
+: NAME>COMPILE
+    DUP IMMEDIATE? IF
+        ['] EXECUTE
+    ELSE
+        ['] COMPILE,
+    THEN
+;

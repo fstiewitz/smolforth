@@ -1,0 +1,24 @@
+: 3DUP
+    >R 2DUP R@ ROT ROT R>
+;
+
+: READ-FILE-FULL
+    BEGIN
+        3DUP READ-FILE ?DUP IF 2R> 2DROP 0 SWAP EXIT THEN
+        \ addr u fd u
+        ROT SWAP - SWAP DUP 0=
+    UNTIL
+;
+
+: RAMDISK:
+    CREATE
+    R/O OPEN-FILE THROW
+    DUP FILE-SIZE THROW
+    0 <> ABORT" FILE TOO LARGE"
+    >R
+    \ fd u
+    R@ ,
+    HERE R@ R> ALLOT
+    ROT DUP >R READ-FILE-FULL THROW
+    R> CLOSE-FILE THROW
+;
