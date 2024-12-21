@@ -12,7 +12,7 @@
 \ TUT
 \ TUT 1. Your linker will probably put the code in a read-only section regardless.
 \ TUT     To fix this, I provide a tool called `make-elf-writable` (`make-elf-writable FILE .text`).
-\ TUT 2. Conventional wisdom dictates that is a safety hazard to have executable data
+\ TUT 2. Conventional wisdom dictates that it is a safety hazard to have executable data
 \ TUT     (but then again, you are programming in Forth, so...).
 \ TUT 3. If your code is only written in forth but does not "use" forth
 \ TUT     (like the code in `example/reloc`), then you don't need the word headers.
