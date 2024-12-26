@@ -14,6 +14,12 @@ This project requires `bash`, `perl`, `m4`, `make`, `gcc` (native) and `g++` (na
 Additionally, for other architectures, `gcc` and `qemu-user` for every target platform (and `qemu-system` to run some OS-level tests).
 This project assumes x86_64 to be native.
 
+A single helper program needs to be compiled once manually:
+
+```
+gcc -o make-elf-writable make-elf-writable.c
+```
+
 To build and test all targets:
 
 ```
