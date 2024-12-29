@@ -332,7 +332,7 @@ void save_obj() {
 		auto &[flags, start, end, n] = limits;
 		ElfX_Shdr hdr{
 			static_cast<ElfX_Word>(sh_string_table.size()),
-			SHT_PROGBITS,
+			SHT_NOBITS,
 			0,
 			0,
 			0,
@@ -343,12 +343,18 @@ void save_obj() {
 			0
 		};
 		std::string name = ".bss";
+		hdr.sh_flags = SHF_ALLOC;
+		if(0 != (flags & 4)) { // UDATA
+			hdr.sh_flags |= SHF_WRITE;
+		}
 		if(0 != (flags & 2)) { // IDATA
-			hdr.sh_flags |= SHF_ALLOC | SHF_WRITE;
+			hdr.sh_flags |= SHF_WRITE;
+			hdr.sh_type = SHT_PROGBITS;
 			name = ".data";
 		}
 		if(0 != (flags & 1)) { // CDATA
-			hdr.sh_flags |= SHF_ALLOC | SHF_EXECINSTR;
+			hdr.sh_flags |= SHF_EXECINSTR;
+			hdr.sh_type = SHT_PROGBITS;
 			name = ".text";
 		}
 		if(0 != (flags & 3)) {
