@@ -27,6 +27,7 @@ ifdef({SF_HAS_BUILTIN_BLOCK}, {
     li a1, -1
     beq ra0, a1, .REFILL_err
     beqz ra0, .REFILL_err
+    set_clear a0
     lb_var ba0, .REFILL_char
     blez a0, .REFILL_end
     li a1, 10
