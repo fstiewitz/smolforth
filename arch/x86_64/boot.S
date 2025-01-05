@@ -46,14 +46,14 @@ c_to_sf:
     REG_S_var s2, fps
 #endif
 
-    leaq saved_registers(%rip), %rax
-    movq 0*WORDSIZE(%rax), %rbx
-    movq 1*WORDSIZE(%rax), %rsp
-    movq 2*WORDSIZE(%rax), %rbp
-    movq 3*WORDSIZE(%rax), %r12
-    movq 4*WORDSIZE(%rax), %r13
-    movq 5*WORDSIZE(%rax), %r14
-    movq 6*WORDSIZE(%rax), %r15
+    leaq saved_registers(%rip), %rdi
+    movq 0*WORDSIZE(%rdi), %rbx
+    movq 1*WORDSIZE(%rdi), %rsp
+    movq 2*WORDSIZE(%rdi), %rbp
+    movq 3*WORDSIZE(%rdi), %r12
+    movq 4*WORDSIZE(%rdi), %r13
+    movq 5*WORDSIZE(%rdi), %r14
+    movq 6*WORDSIZE(%rdi), %r15
     popq %rbp
     ret
 
