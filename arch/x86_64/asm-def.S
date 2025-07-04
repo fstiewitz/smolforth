@@ -192,6 +192,7 @@ imulq \src1, \dest
 
 .macro div_to_clears_a2 dest, src0, src1
 cmpq $0, \src0
+movq $0, %rdx
 setge %dl
 sub $1, %rdx
 movq \src0, %rax
@@ -201,6 +202,7 @@ movq %rax, \dest
 
 .macro rem_to_clears_a2 dest, src0, src1
 cmpq $0, \src0
+movq $0, %rdx
 setge %dl
 sub $1, %rdx
 movq \src0, %rax
@@ -222,6 +224,7 @@ movq %rax, \lower
 
 .macro div2_to_a2 lower, src0, src1
 cmpq $0, \src0
+movq $0, %rdx
 setge %dl
 sub $1, %rdx
 movq \src0, %rax
@@ -332,6 +335,11 @@ sete \r0
 .macro sltz r0, r1
 cmp $0, \r1
 setl \r0
+.endm
+
+.macro sgtz r0, r1
+cmp $0, \r1
+setg \r0
 .endm
 
 .macro snez r0, r1
